@@ -1,0 +1,183 @@
+{
+	"info": {
+		"_postman_id": "85f56b5a-74c2-4fb7-88d9-12323154f927",
+		"name": "GeminiBank",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1379457"
+	},
+	"item": [
+		{
+			"name": "Start Customer Registration",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Assuming the response JSON contains a field 'requestId'",
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"requestId\", jsonData.requestId);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"John Doe\",\n  \"address\": {\n    \"streetName\": \"Main Street\",\n    \"city\": \"Amsterdam\",\n    \"postalCode\": \"1011 AB\",\n    \"houseNumber\": \"9\"\n  },\n  \"dateOfBirth\": \"1990-01-01\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/api/customers/start",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"api",
+						"customers",
+						"start"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pause Customer Registration",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/api/customers/{{requestId}}/pause",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"api",
+						"customers",
+						"{{requestId}}",
+						"pause"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Resume Customer Registration",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"John Doe\",\n  \"address\": {\n    \"streetName\": \"Main Street\",\n    \"city\": \"Amsterdam\",\n    \"postalCode\": \"1011 AB\",\n    \"houseNumber\": \"9\"\n  },\n  \"dateOfBirth\": \"1990-01-01\",\n  \"idDocument\": \"AB123456\",\n  \"accountType\": \"SAVINGS\",\n  \"startingBalance\": 1000,\n  \"monthlySalary\": 3000,\n  \"interestedInOtherProducts\": true,\n  \"email\": \"john.doe@example.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/api/customers/{{requestId}}/resume",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"api",
+						"customers",
+						"{{requestId}}",
+						"resume"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Customer By Request Id",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/api/customers/{{requestId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"api",
+						"customers",
+						"{{requestId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "requestId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
