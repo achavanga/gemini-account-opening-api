@@ -30,6 +30,7 @@ The **Gemini Bank Account Opening API** allows customers to initiate, pause, res
 - Use the `/api/customers/{requestId}/pause` endpoint to pause a request.
 - Use the `/api/customers/{requestId}/resume` endpoint to resume a paused request.
 - Use the `/api/customers/{requestId}` endpoint to get a customer by request id.
+- Use the `/api/customers/validate` endpoint used by frontend application to do field validation.
 - Ensure all mandatory fields are provided when starting a request.
 
 ## API Endpoints
