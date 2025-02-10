@@ -175,7 +175,7 @@ You can also run the application in Docker containers.
 This will run the application in a Docker container and map port 8080 on your host machine to port 8080 on the container.
 #### To stop and remove containers, networks, and volumes
 ```bash
- docker compose down
+ docker compose down -v  
 
 ```
 #### Swagger API Documentation

@@ -8,10 +8,9 @@ CREATE TABLE address (
 );
 
 -- Create AccountType enum (if your database supports enums)
-CREATE TYPE account_type AS ENUM ('SAVINGS', 'CHECKING', 'BUSINESS');
-
+CREATE TYPE account_type AS ENUM ('SAVINGS', 'CURRENT', 'INVESTMENT');
 -- Create RequestStatus enum (if your database supports enums)
-CREATE TYPE request_status AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
+CREATE TYPE request_status AS ENUM ('IN_PROGRESS', 'PAUSED', 'SUBMITTED', 'EXPIRED');
 
 -- Create Customer table
 CREATE TABLE customer (
