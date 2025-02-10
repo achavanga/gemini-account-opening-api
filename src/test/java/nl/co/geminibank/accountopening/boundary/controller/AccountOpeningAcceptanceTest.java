@@ -7,6 +7,7 @@ import nl.co.geminibank.accountopening.model.CustomerRequestResponseDTO;
 import nl.co.geminibank.accountopening.model.CustomerRequestStartDTO;
 import nl.co.geminibank.accountopening.model.CustomerRequestUpdateDTO;
 import nl.co.geminibank.accountopening.model.RequestStatusDTO;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@DisplayName("API endpoints acc tests")
 @ActiveProfiles({"test-no-scheduling"})
 class AccountOpeningAcceptanceTest extends TestcontainerConfig {
     private static final String BASE_URL = "/v1/api/customers";
