@@ -1,7 +1,7 @@
 package nl.co.geminibank.accountopening.control.service;
 
 import jakarta.validation.Validator;
-import nl.co.geminibank.accountopening.boundary.exception.ValidationException;
+import nl.co.geminibank.accountopening.control.exception.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

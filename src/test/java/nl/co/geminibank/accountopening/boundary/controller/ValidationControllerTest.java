@@ -3,7 +3,7 @@ package nl.co.geminibank.accountopening.boundary.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import nl.co.geminibank.accountopening.boundary.exception.ValidationException;
+import nl.co.geminibank.accountopening.control.exception.ValidationException;
 import nl.co.geminibank.accountopening.control.service.ValidationService;
 import nl.co.geminibank.accountopening.model.ApiCustomersValidatePostRequestDTO;
 import org.junit.jupiter.api.Test;

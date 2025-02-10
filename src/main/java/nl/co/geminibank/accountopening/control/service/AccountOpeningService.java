@@ -2,9 +2,9 @@ package nl.co.geminibank.accountopening.control.service;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import nl.co.geminibank.accountopening.boundary.exception.CustomerApplicationIsSubmittedException;
-import nl.co.geminibank.accountopening.boundary.exception.CustomerException;
-import nl.co.geminibank.accountopening.boundary.exception.CustomerNotFoundException;
+import nl.co.geminibank.accountopening.control.exception.CustomerApplicationIsSubmittedException;
+import nl.co.geminibank.accountopening.control.exception.CustomerException;
+import nl.co.geminibank.accountopening.control.exception.CustomerNotFoundException;
 import nl.co.geminibank.accountopening.entity.model.Customer;
 import nl.co.geminibank.accountopening.entity.model.RequestStatus;
 import nl.co.geminibank.accountopening.entity.repository.AccountOpeningRepository;
@@ -158,7 +158,7 @@ public class AccountOpeningService {
      */
     private void updateCustomerDetails(Customer customer, CustomerRequestStartDTO customerRequestStartDTO) {
         modelMapper.typeMap(CustomerRequestStartDTO.class, Customer.class)
-                .addMappings(mapper -> mapper.skip(Customer::setId));  // Skip setting the ID field
+                .addMappings(mapper -> mapper.skip(Customer::setId));
 
         var updatedCustomer = modelMapper.map(customerRequestStartDTO, Customer.class);
         customer.setAccountType(updatedCustomer.getAccountType());
@@ -167,8 +167,7 @@ public class AccountOpeningService {
         customer.setMonthlySalary(updatedCustomer.getMonthlySalary());
         customer.setInterestedInOtherProducts(updatedCustomer.getInterestedInOtherProducts());
         customer.setStartingBalance(updatedCustomer.getStartingBalance());
-        customer.setPausedAt(null);
-        customer.setStatus(RequestStatus.SUBMITTED);
+        customer.resume();
     }
     /**
      * Maps the given customer entity to the specified DTO.

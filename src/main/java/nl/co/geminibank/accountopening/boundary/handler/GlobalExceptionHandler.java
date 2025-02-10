@@ -1,6 +1,10 @@
-package nl.co.geminibank.accountopening.boundary.exception;
+package nl.co.geminibank.accountopening.boundary.handler;
 
 import jakarta.validation.ConstraintViolationException;
+import nl.co.geminibank.accountopening.control.exception.CustomerApplicationIsSubmittedException;
+import nl.co.geminibank.accountopening.control.exception.CustomerException;
+import nl.co.geminibank.accountopening.control.exception.CustomerNotFoundException;
+import nl.co.geminibank.accountopening.control.exception.ValidationException;
 import nl.co.geminibank.accountopening.model.ErrorResponseDTO;
 import nl.co.geminibank.accountopening.model.ValidationFailureResponseDTO;
 import org.springframework.http.HttpStatus;

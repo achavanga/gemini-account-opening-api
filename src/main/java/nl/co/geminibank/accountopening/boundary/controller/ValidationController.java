@@ -2,7 +2,7 @@ package nl.co.geminibank.accountopening.boundary.controller;
 
 
 import nl.co.geminibank.accountopening.api.ValidationApi;
-import nl.co.geminibank.accountopening.boundary.exception.ValidationException;
+import nl.co.geminibank.accountopening.control.exception.ValidationException;
 import nl.co.geminibank.accountopening.control.service.ValidationService;
 import nl.co.geminibank.accountopening.model.ApiCustomersValidatePostRequestDTO;
 import nl.co.geminibank.accountopening.model.ValidationSuccessResponseDTO;

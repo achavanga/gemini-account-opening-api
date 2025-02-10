@@ -35,7 +35,7 @@ public class MapperConfig {
             try {
                 return Long.parseLong(context.getSource()); // Try parsing the string as Long
             } catch (NumberFormatException e) {
-                return null; // Return null or handle the exception as needed
+                return null;
             }
         });
 

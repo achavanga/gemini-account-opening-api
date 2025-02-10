@@ -5,6 +5,13 @@
 ## Overview
 The **Gemini Bank Account Opening API** allows customers to initiate, pause, resume, and submit their account opening requests. This API provides real-time validation of customer information during the onboarding process, ensuring all mandatory details are submitted before the request proceeds.
 
+### Architecture
+
+This microservice follows the Boundary-Control-Entity (BCE) Design Pattern to separate concerns and maintain a clean architecture:
+- **Boundary**: Handles interactions with external systems and clients (e.g., API controllers, external integrations).
+- **Control**: Contains business logic and workflow management (e.g., service layer, validations, and processing logic).
+- **Entity**: Represents the core domain models and business rules (e.g., Account, Customer, and related entities).
+
 ### Features:
 - Start, pause, resume, and submit account opening requests.
 - Real-time validation of customer fields.
@@ -198,6 +205,5 @@ To build the project and run the tests, use:
 ```
 This will compile the code, run the tests, and package the application into a JAR file.
 
-## Postman
-
-Collection file can be found here [GeminiBank.postman_collection.json](GeminiBank.postman_collection.json)
+## Testing with Postman
+Import the provided Postman Collection here [GeminiBank.postman_collection.json](GeminiBank.postman_collection.json)

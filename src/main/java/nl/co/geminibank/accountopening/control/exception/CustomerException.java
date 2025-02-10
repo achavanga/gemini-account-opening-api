@@ -1,4 +1,4 @@
-package nl.co.geminibank.accountopening.boundary.exception;
+package nl.co.geminibank.accountopening.control.exception;
 
 import lombok.Getter;
 

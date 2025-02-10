@@ -1,8 +1,8 @@
 package nl.co.geminibank.accountopening.control.service;
 
-import nl.co.geminibank.accountopening.boundary.exception.CustomerApplicationIsSubmittedException;
-import nl.co.geminibank.accountopening.boundary.exception.CustomerException;
-import nl.co.geminibank.accountopening.boundary.exception.CustomerNotFoundException;
+import nl.co.geminibank.accountopening.control.exception.CustomerApplicationIsSubmittedException;
+import nl.co.geminibank.accountopening.control.exception.CustomerException;
+import nl.co.geminibank.accountopening.control.exception.CustomerNotFoundException;
 import nl.co.geminibank.accountopening.entity.model.AccountType;
 import nl.co.geminibank.accountopening.entity.model.Customer;
 import nl.co.geminibank.accountopening.entity.model.RequestStatus;

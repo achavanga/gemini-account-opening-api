@@ -1,7 +1,7 @@
 package nl.co.geminibank.accountopening.control.service;
 
 import jakarta.validation.Validator;
-import nl.co.geminibank.accountopening.boundary.exception.ValidationException;
+import nl.co.geminibank.accountopening.control.exception.ValidationException;
 import nl.co.geminibank.accountopening.entity.model.Customer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
