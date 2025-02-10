@@ -125,7 +125,11 @@ You can also run the application in Docker containers.
 
 ```
 This will run the application in a Docker container and map port 8080 on your host machine to port 8080 on the container.
+#### To stop and remove containers, networks, and volumes
+```bash
+ docker compose down
 
+```
 #### Swagger API Documentation
 
 You can access the Swagger UI to interact with the API at:
@@ -152,3 +156,7 @@ To build the project and run the tests, use:
 ./mvnw clean install
 ```
 This will compile the code, run the tests, and package the application into a JAR file.
+
+## Postman
+
+Collection file can be found here [GeminiBank.postman_collection.json](GeminiBank.postman_collection.json)
