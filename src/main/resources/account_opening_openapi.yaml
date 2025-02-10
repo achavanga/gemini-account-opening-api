@@ -1,0 +1,559 @@
+openapi: 3.1.0
+info:
+  title: Gemini Bank Account Opening API
+  description: |
+    API for managing customer account opening requests, including real-time validation, pausing, and resuming requests.
+    This API allows customers to start, pause, resume, and submit account opening requests.
+
+    ### Usage Guidelines:
+    - Use the `/api/customers/start` endpoint to initiate a new account opening request.
+    - Use the `/api/customers/{requestId}/pause` endpoint to pause a request.
+    - Use the `/api/customers/{requestId}/resume` endpoint to resume a paused request.
+    - Use the `/api/customers/{requestId}` endpoint to get customer by request id.
+    - Ensure all mandatory fields are provided when starting a request.
+  version: 1.0.0
+  contact:
+    name: Gemini Bank Support
+    email: support@geminibank.com
+    url: https://www.geminibank.co.nl
+
+servers:
+  - url: http://localhost:8080/v1
+    description: Local development server (version 1)
+  - url: https://api.geminibank.co.nl/v1
+    description: Production server (version 1)
+
+tags:
+  - name: Account Opening
+    description: Operations for starting, updating, and submitting customer account opening requests.
+  - name: Validation
+    description: Operations for validating customer fields during the onboarding process.
+
+#security:
+#  - OAuth2: [read:requests, write:requests]
+
+paths:
+  /api/customers/start:
+    post:
+      summary: Start a new account opening request
+      description: |
+        Initiates a new account opening request and returns a unique request ID.
+        The customer must provide mandatory details such as name, address, date of birth, ID document, and account type.
+      tags:
+        - Account Opening
+#      security:
+#        - OAuth2:
+#            - "write:requests"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequestStart'
+      responses:
+        '200':
+          description: Account opening request started successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerRequestResponse'
+        '400':
+          description: Bad request (e.g., invalid input)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Unprocessable entity (e.g., validation errors)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/customers/{requestId}/resume:
+    put:
+      summary: Resume  an account opening request
+      description: Resumes a previously paused account opening request.
+      tags:
+        - Account Opening
+#      security:
+#        - OAuth2:
+#            - "read:requests"
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique ID of the account opening request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequestStart'
+      responses:
+        '200':
+          description: Request resumed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerRequestUpdate'
+        '400':
+          description: Bad request (e.g., invalid input)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Request not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '410':
+          description: Request has expired and can no longer be paused or resumed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Unprocessable entity (e.g., validation errors)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/customers/{requestId}:
+    get:
+      summary: Retrieve the current state of a request
+      description: Returns the current state of an account opening request by its request ID.
+      tags:
+        - Account Opening
+#      security:
+#        - OAuth2:
+#            - "read:requests"
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique ID of the account opening request
+      responses:
+        '200':
+          description: Request details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerRequestResponse'
+        '404':
+          description: Request not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/customers/{requestId}/pause:
+    put:
+      tags:
+        - Account Opening
+      summary: Pause an account opening request
+      description: |
+        Pauses an existing account opening request.
+        The request can be resumed later using the `/resume` endpoint.
+        If the request is paused for more than 7 days, it will expire and can no longer be resumed.
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique ID of the account opening request
+      responses:
+        '200':
+          description: Request paused successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerRequestResponse'
+        '400':
+          description: Bad request (e.g., invalid input)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Request not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '410':
+          description: Request has expired and can no longer be paused or resumed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+  /api/customers/validate:
+    post:
+      summary: Validate a specific field
+      description: Validates a single field and returns validation errors.
+      tags:
+        - Validation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                field:
+                  type: string
+                  description: Name of the field to validate
+                value:
+                  type: string
+                  description: Value of the field to validate
+      responses:
+        '200':
+          description: Field is valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationSuccessResponse'
+        '400':
+          description: Field is invalid due to validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailureResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    CustomerRequestStart:
+      type: object
+      required:
+        - name
+        - address
+        - dateOfBirth
+      properties:
+        name:
+          type: string
+          pattern: '^[A-Za-z\s]{2,100}$'
+          minLength: 2
+          maxLength: 100
+          description: Full name of the customer (2-100 alphabetic characters and spaces)
+        address:
+          $ref: '#/components/schemas/Address'
+        dateOfBirth:
+          type: string
+          format: date
+          description: Date of birth in the format YYYY-MM-DD. Customer must be at least 18 years old.
+        idDocument:
+          type: string
+          pattern: '^[A-Za-z0-9]{8,12}$'
+          description: ID document number (8-12 alphanumeric characters)
+        accountType:
+          $ref: '#/components/schemas/AccountType'
+        startingBalance:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1000000
+          description: Optional starting balance for the account (must be between 0 and 1,000,000)
+        monthlySalary:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 100000
+          description: Optional monthly salary of the customer (must be between 0 and 100,000)
+        interestedInOtherProducts:
+          type: boolean
+          description: Whether the customer is interested in other bank products
+        email:
+          type: string
+          format: email
+          pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+          description: Valid email address (e.g., user@example.com)
+
+    CustomerRequestResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+          description: Unique ID of the account opening request
+          example: "req12345"
+        name:
+          type: string
+          pattern: '^[A-Za-z\s]{2,100}$'
+          minLength: 2
+          maxLength: 100
+          description: Full name of the customer (2-100 alphabetic characters and spaces)
+          example: "John Doe"
+        address:
+          $ref: '#/components/schemas/Address'
+        dateOfBirth:
+          type: string
+          format: date
+          description: Date of birth in the format YYYY-MM-DD. Customer must be at least 18 years old.
+          example: "1990-01-01"
+        idDocument:
+          type: string
+          pattern: '^[A-Za-z0-9]{8,12}$'
+          description: ID document number (8-12 alphanumeric characters)
+          example: "AB123456"
+        accountType:
+          $ref: '#/components/schemas/AccountType'
+        startingBalance:
+          type: number
+          format: double
+          description: Optional starting balance for the account
+          example: 1000.00
+        monthlySalary:
+          type: number
+          format: double
+          description: Optional monthly salary of the customer
+          example: 3000.00
+        interestedInOtherProducts:
+          type: boolean
+          description: Whether the customer is interested in other bank products
+          example: true
+        email:
+          type: string
+          format: email
+          pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+          description: Optional email address of the customer
+          example: "john.doe@example.com"
+        status:
+          $ref: '#/components/schemas/RequestStatus'
+        pausedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the request was paused (ISO 8601 format). Example
+          example: "2023-10-01T12:00:00Z"
+
+    CustomerRequestUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          pattern: '^[A-Za-z\s]{2,100}$'
+          minLength: 2
+          maxLength: 100
+          description: Full name of the customer (2-100 alphabetic characters and spaces)
+        address:
+          $ref: '#/components/schemas/Address'
+        dateOfBirth:
+          type: string
+          format: date
+          description: Date of birth in the format YYYY-MM-DD. Customer must be at least 18 years old.
+        idDocument:
+          type: string
+          pattern: '^[A-Za-z0-9]{8,12}$'
+          description: ID document number (8-12 alphanumeric characters)
+        accountType:
+          $ref: '#/components/schemas/AccountType'
+        startingBalance:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1000000
+          description: Optional starting balance for the account (must be between 0 and 1,000,000)
+        monthlySalary:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 100000
+          description: Optional monthly salary of the customer (must be between 0 and 100,000)
+        interestedInOtherProducts:
+          type: boolean
+          description: Whether the customer is interested in other bank products
+        email:
+          type: string
+          format: email
+          pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+          description: Valid email address (e.g., user@example.com)
+        status:
+          $ref: '#/components/schemas/RequestStatus'
+
+    Address:
+      type: object
+      required:
+        - streetName
+        - houseNumber
+        - postalCode
+        - city
+      properties:
+        streetName:
+          type: string
+          pattern: '^[A-Za-z0-9\s]{2,100}$'
+          minLength: 2
+          maxLength: 100
+          description: Street name of the customer's address (2-100 alphanumeric characters and spaces)
+        houseNumber:
+          type: string
+          pattern: '^[0-9]{1,5}[A-Za-z]?$'
+          minLength: 1
+          maxLength: 6
+          description: House number of the customer's address (1-5 digits, optionally followed by a letter)
+        postalCode:
+          type: string
+          pattern: '^\d{4} [A-Z]{2}$'
+          description: Postcode in the format "1234 AB" (4 digits, space, 2 uppercase letters)
+        city:
+          type: string
+          pattern: '^[A-Za-z\s]{2,100}$'
+          minLength: 2
+          maxLength: 100
+          description: City of the customer's address (2-100 alphabetic characters and spaces)
+
+    AccountType:
+      type: string
+      enum:
+        - SAVINGS
+        - CURRENT
+        - INVESTMENT
+      description: |
+        - SAVINGS: A savings account.
+        - CURRENT: A current account.
+        - INVESTMENT: An investment account.
+
+    RequestStatus:
+      type: string
+      enum:
+        - IN_PROGRESS
+        - PAUSED
+        - SUBMITTED
+        - EXPIRED
+      description: |
+        - IN_PROGRESS: The request is being filled out by the customer.
+        - PAUSED: The request has been paused by the customer.
+        - SUBMITTED: The request has been submitted for processing.
+        - EXPIRED: The request has expired after being paused for too long.
+
+    ValidationSuccessResponse:
+      type: object
+      required:
+        - valid
+        - message
+      properties:
+        valid:
+          type: boolean
+          description: Indicates if the field is valid
+          example: true
+        message:
+          type: string
+          description: A message explaining that the field is valid
+          example: "The email address is valid."
+
+    ValidationFailureResponse:
+      type: object
+      required:
+        - valid
+        - error
+        - field
+      properties:
+        valid:
+          type: boolean
+          description: Indicates if the field is valid
+          example: false
+        error:
+          type: string
+          description: A message explaining why the field is invalid
+          example: "The email address is not in a valid format."
+        field:
+          type: string
+          description: The field that caused the error
+          example: "email"
+
+    ErrorResponse:
+      type: object
+      required:
+        - timestamp
+        - status
+        - error
+        - errorCode
+        - details
+        - path
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of the error
+          example: "2023-10-01T12:00:00Z"
+        status:
+          type: integer
+          description: HTTP status code
+          example: 400
+        error:
+          type: string
+          description: Human-readable error message
+          example: "Bad Request"
+        errorCode:
+          type: string
+          description: Machine-readable error code
+          example: "VALIDATION_ERROR"
+        details:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidationFailureResponse"
+#        details:
+#          type: array
+#          items:
+#            type: object
+#            properties:
+#              field:
+#                type: string
+#                description: Name of the field causing the error
+#                example: "postCode"
+#              message:
+#                type: string
+#                description: Error message for the specific field
+#                example: "Postcode must be in the format '1234 AB'."
+        path:
+          type: string
+          description: API path where the error occurred
+          example: "/api/customers/start"
+
+#  securitySchemes:
+#    OAuth2:
+#      type: oauth2
+#      flows:
+#        authorizationCode:
+#          authorizationUrl: https://auth.geminibank.com/oauth/authorize
+#          tokenUrl: https://auth.geminibank.com/oauth/token
+#          scopes:
+#            read:requests: Read account opening requests
+#            write:requests: Create or update account opening requests
+# Add your monitoring, logging, and error handling settings here

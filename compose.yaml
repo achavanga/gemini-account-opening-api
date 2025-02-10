@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .  # Path to the directory containing the Dockerfile
+      dockerfile: Dockerfile
+    container_name: account-opening-app
+    ports:
+      - "8080:8080"  # Map host port 8080 to container port 8080
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/geminibank  # Use postgres service name
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres@123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+    depends_on:
+      - postgres
+    networks:
+      - common-network
+
+  postgres:
+    image: 'postgres:latest'
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: geminibank
+      POSTGRES_PASSWORD: postgres@123
+      POSTGRES_USER: postgres
+    ports:
+      - '5432:5432'  # Map host port 5432 to container port 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d geminibank"]
+      interval: 30s
+      timeout: 5s
+      retries: 10
+    networks:
+      - common-network
+
+volumes:
+  postgres_data:
+
+networks:
+  common-network:
+    driver: bridge
