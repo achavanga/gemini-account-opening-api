@@ -2,9 +2,8 @@
 
 ## Overview
 
-This project is a microservice solution designed to modernize the account opening system for Gemini Bank. The solution is built using Java 21, Spring Boot, and adheres to Clean Code and SOLID principles. It provides a seamless customer experience by enabling real-time validation, pausing and resuming requests, and ensuring all validations occur during the onboarding phase.
-
-The microservice is designed to handle customer registration, validation, and request management while providing APIs for frontend integration. The solution is containerized for easy deployment and includes comprehensive documentation, including OpenAPI 3.1.0 specifications and a Postman collection.
+## Overview
+The **Gemini Bank Account Opening API** allows customers to initiate, pause, resume, and submit their account opening requests. This API provides real-time validation of customer information during the onboarding process, ensuring all mandatory details are submitted before the request proceeds.
 
 ### Features:
 - Start, pause, resume, and submit account opening requests.
@@ -42,6 +41,12 @@ The microservice is designed to handle customer registration, validation, and re
 Initiates a new account opening request and returns a unique request ID.
 
 **Request Body:**
+- Requires mandatory details such as name, address, date of birth, ID document, and account type.
+- **Responses**:
+    - **200 OK**: Account opening request started successfully.
+    - **400 Bad Request**: Invalid input.
+    - **422 Unprocessable Entity**: Validation errors.
+    - **500 Internal Server Error**: Server error.
 ```json
 {
   "name": "John Doe",
@@ -55,14 +60,29 @@ Initiates a new account opening request and returns a unique request ID.
 }
 ```
 
+
 #### `PUT /api/customers/{requestId}/pause`
 ```
 v1/api/customers/{{requestId}}pause
 ```
-Pause customer registration by request id.
+- Pauses a customer account opening request.
+    - **Parameters**: `requestId` (The unique ID of the account opening request)
+    - **Responses**:
+        - **200 OK**: Request paused successfully.
+        - **400 Bad Request**: Invalid input.
+        - **404 Not Found**: Request not found.
+        - **410 Gone**: Request has expired.
+        - **500 Internal Server Error**: Server error.
 
 #### `PUT /api/customers/{requestId}/resume`
-Resume customer registration by request id.
+Resumes a previously paused account opening request.
+- **Parameters**: `requestId` (The unique ID of the account opening request)
+- **Responses**:
+    - **200 OK**: Request resumed successfully.
+    - **400 Bad Request**: Invalid input.
+    - **404 Not Found**: Request not found.
+    - **410 Gone**: Request expired.
+    - **500 Internal Server Error**: Server error.
 **Request Body:**
 ```json
 {
@@ -86,8 +106,20 @@ Resume customer registration by request id.
 ```
 v1/api/customers/{{requestId}}
 ```
-Get Customer by request id
+Retrieves the current state of a request by its request ID.
+- **Parameters**: `requestId` (The unique ID of the account opening request)
+- **Responses**:
+    - **200 OK**: Request details retrieved successfully.
+    - **404 Not Found**: Request not found.
+    - **500 Internal Server Error**: Server error.
 
+### `POST /api/customers/validate`
+- Validates a specific field in the customer's information (e.g., name, address, etc.).
+- **Request Body**: Contains `field` (name of the field to validate) and `value` (value to validate).
+- **Responses**:
+    - **200 OK**: Field is valid.
+    - **400 Bad Request**: Field is invalid due to validation errors.
+    - **500 Internal Server Error**: Server error.
 
 ## Running the Application
 
