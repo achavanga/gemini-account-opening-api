@@ -130,6 +130,14 @@ To run the application locally, make sure you have the following installed:
 - Maven
 - Docker
 
+Clone the repository:
+```bash
+ git clone https://github.com/achavanga/gemini-account-opening-api.git
+```
+Navigate to the project directory:
+```bash
+ cd account-opening-api
+```
 Once you've cloned the repository, you can build the application with:
 
 ```bash
